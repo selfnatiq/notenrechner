@@ -10,8 +10,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 				<title>Notenrechner</title>
 
 				<link rel="icon" href="/logo.png" />
+				<link rel="manifest" href="manifest.json" />
 				<meta name="theme-color" content="#ffffff" />
-				{/* <link rel="manifest" href="manifest.json" /> */}
+				<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 				{/* <link rel="icon" type="image/png" href="/images/icon-36x36.png" sizes="36x36" />
 				<link rel="icon" type="image/png" href="/images/icon-96x96.png" sizes="96x96" />
@@ -26,6 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 				/>
 			</Head>
 
+			<header />
 			<Component {...pageProps} />
 		</ChakraProvider>
 	)

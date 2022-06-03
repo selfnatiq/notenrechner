@@ -14,3 +14,15 @@ a {
 * {
   box-sizing: border-box;
 }
+
+header {
+  display: none;
+}
+
+@media screen and (display-mode: standalone) {
+  header {
+    display: block;
+    background: #319795;
+    height: 45px !important;
+  }
+}
