@@ -9,8 +9,10 @@ import {
 	InputGroup,
 	Button,
 	Text,
+	Switch,
+	useColorMode,
 } from '@chakra-ui/react'
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
+import { AddIcon, DeleteIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 
 const DEFAULT_GRADE = 6
 const DEFAULT_PERCENTAGE = 100
@@ -22,8 +24,8 @@ interface Grade {
 	percentage: number
 }
 
-const calculateAvg = (grades: Grade[]) => {
-	const sum: any = grades.reduce(
+const calcGrade = (grades: Grade[]) => {
+	const sum: { grades: number; percentage: number } = grades.reduce(
 		(acc, _grade) => {
 			acc.grades += _grade.grade * _grade.percentage
 			acc.percentage += _grade.percentage
@@ -35,41 +37,53 @@ const calculateAvg = (grades: Grade[]) => {
 
 	const avg = sum.grades / sum.percentage
 
-	if (avg > 6) return 6
-	if (avg < 1) return 1
-	return avg.toFixed(2)
+	let color = 'green.400'
+	if (avg < 5) color = 'orange.400'
+	if (avg < 4) color = 'red.400'
+
+	return { avg: avg.toFixed(2), color }
 }
 
 interface TheDoubleInputProps {
 	grade: Grade
 	setGrades: React.Dispatch<React.SetStateAction<Grade[]>>
+	removeInput: (grade: Grade) => void
 }
 
-const TheDoubleInput: React.FC<TheDoubleInputProps> = ({ grade, setGrades }) => {
-	const inputHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		e.preventDefault()
+const TheDoubleInput: React.FC<TheDoubleInputProps> = ({ grade, setGrades, removeInput }) => {
+	const gradeHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		let value = parseFloat(e.currentTarget.value)
 
-		const inputName = e.currentTarget.name
-		const inputValue = parseFloat(e.currentTarget.value)
-
-		if (isNaN(inputValue)) return
-
-		const isGradeInput = inputName.startsWith('grade')
-		console.log(inputName, inputValue, isGradeInput)
+		if (isNaN(value)) return
+		if (value > 6) value = 6
+		if (value < 1) value = 1
 
 		setGrades((grades) => {
-			let foundGrade = grades.find((_grade) => _grade.name === inputName)
+			const gradeIndex = grades.findIndex((_grade) => _grade.name === grade.name)
 
-			if (!foundGrade) return grades
-			const foundGradeIndex = grades.findIndex((_grade) => _grade.name === inputName)
-
-			foundGrade = {
-				...foundGrade,
-				grade: isGradeInput ? inputValue : 0,
-				percentage: isGradeInput ? 100 : inputValue,
+			grades[gradeIndex] = {
+				...grades[gradeIndex],
+				grade: value,
 			}
 
-			grades[foundGradeIndex] = foundGrade
+			return [...grades]
+		})
+	}
+
+	const percentageHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		let value = parseFloat(e.currentTarget.value)
+
+		if (isNaN(value)) return
+		if (value > 100) value = 100
+		if (value < 1) value = 1
+
+		setGrades((grades) => {
+			const gradeIndex = grades.findIndex((_grade) => _grade.name === grade.name)
+
+			grades[gradeIndex] = {
+				...grades[gradeIndex],
+				percentage: value,
+			}
 
 			return [...grades]
 		})
@@ -83,20 +97,25 @@ const TheDoubleInput: React.FC<TheDoubleInputProps> = ({ grade, setGrades }) => 
 				defaultValue={grade.grade}
 				min={1}
 				max={6}
-				onInput={inputHandler}
+				size="lg"
+				onInput={gradeHandler}
 			/>
 
-			<InputGroup>
+			<InputGroup size="lg">
 				<Input
 					type="number"
 					name={'percentage' + grade.name}
 					defaultValue={grade.percentage}
 					min={1}
 					max={100}
-					onInput={inputHandler}
+					onInput={percentageHandler}
 				/>
-				<InputRightAddon children="%" />
+				<InputRightAddon>%</InputRightAddon>
 			</InputGroup>
+
+			<Button size="lg" onClick={() => removeInput(grade)} colorScheme="red" variant="outline">
+				<DeleteIcon w={3} h={3} />
+			</Button>
 		</Flex>
 	)
 }
@@ -106,11 +125,9 @@ export default function Home() {
 		{ id: 1, name: 'grade1', grade: DEFAULT_GRADE, percentage: DEFAULT_PERCENTAGE },
 	])
 
-	console.log(grades)
+	const { colorMode, toggleColorMode } = useColorMode()
 
 	const addInput = (e: React.MouseEvent) => {
-		e.preventDefault()
-
 		if (grades.length >= 10) return
 
 		setGrades((prev) => {
@@ -129,51 +146,50 @@ export default function Home() {
 		})
 	}
 
-	const removeInput = (e: React.MouseEvent) => {
-		e.preventDefault()
-
+	const removeInput = (grade: Grade) => {
 		if (grades.length <= 1) return
-
-		const lastGrade = grades[grades.length - 1]
-		setGrades((_grades) => _grades.filter((_grade) => _grade.name !== lastGrade.name))
+		setGrades((grades) => grades.filter((_grade) => _grade.name !== grade.name))
 	}
 
 	return (
-		<Container py={20}>
-			<Heading size="xl">Notenrechner</Heading>
+		<Container py={4}>
+			<Flex w="full" justifyContent="end">
+				<Flex alignItems="center" gap={3}>
+					<SunIcon w={5} h={5} />
+					<Switch size="lg" isChecked={colorMode === 'dark'} onChange={toggleColorMode} />
+					<MoonIcon w={5} h={5} />
+				</Flex>
+			</Flex>
 
-			<Text fontSize="xl" fontWeight="extrabold" my={2}>
-				Durchschnitt: {calculateAvg(grades)}
-			</Text>
-
-			<VStack mt={6} spacing={2}>
+			<Heading size="2xl">Notenrechner</Heading>
+			<VStack mt={8} spacing={2}>
 				{grades.map((grade) => (
-					<TheDoubleInput key={grade.id} grade={grade} setGrades={setGrades} />
+					<TheDoubleInput
+						key={grade.id}
+						grade={grade}
+						setGrades={setGrades}
+						removeInput={removeInput}
+					/>
 				))}
 			</VStack>
-
-			<Flex gap={1}>
+			<Flex gap={1} mt={2}>
 				<Button
 					disabled={grades.length >= 10}
 					onClick={addInput}
 					w="full"
-					mt={2}
 					colorScheme="teal"
-					variant="outline"
+					size="lg"
 				>
 					<AddIcon w={3} h={3} />
 				</Button>
-				<Button
-					disabled={grades.length <= 1}
-					onClick={removeInput}
-					w="full"
-					mt={2}
-					colorScheme="red"
-					variant="outline"
-				>
-					<DeleteIcon w={3} h={3} />
-				</Button>
 			</Flex>
+
+			<Text fontWeight="extrabold" my={2}>
+				Durchschnitt:{' '}
+				<Text fontSize="5xl" as="span" color={calcGrade(grades).color}>
+					{calcGrade(grades).avg}
+				</Text>
+			</Text>
 		</Container>
 	)
 }
