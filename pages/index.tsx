@@ -90,7 +90,7 @@ const TheDoubleInput: React.FC<TheDoubleInputProps> = ({ grade, setGrades, remov
 	}
 
 	return (
-		<Flex gap={1} w="full">
+		<Flex gap={1} w="full" style={{ WebkitTapHighlightColor: 'transparent' }}>
 			<Input
 				type="number"
 				name={grade.name}

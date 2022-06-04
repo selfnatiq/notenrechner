@@ -15,6 +15,12 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 				<link rel="icon" type="image/png" sizes="196x196" href="/favicon-196.png" />
 				<link rel="apple-touch-icon" href="/apple-icon-180.png" />
+
+				<meta
+					name="viewport"
+					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+				/>
+
 				<meta name="apple-mobile-web-app-capable" content="yes" />
 				<link
 					rel="apple-touch-startup-image"
@@ -145,11 +151,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 					rel="apple-touch-startup-image"
 					href="/apple-splash-1136-640.jpg"
 					media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
-				/>
-
-				<meta
-					name="viewport"
-					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
 				/>
 			</Head>
 
