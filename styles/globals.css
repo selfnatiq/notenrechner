@@ -14,15 +14,3 @@ a {
 * {
   box-sizing: border-box;
 }
-
-header {
-  display: none;
-}
-
-@media screen and (display-mode: standalone) {
-  header {
-    display: block;
-    background: #319795;
-    height: 42px !important;
-  }
-}

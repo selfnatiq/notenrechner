@@ -12,7 +12,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 				<link rel="icon" href="/logo.png" />
 				<link rel="manifest" href="manifest.json" />
 				<meta name="theme-color" content="#319795" />
-				<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 				<link rel="icon" type="image/png" sizes="196x196" href="/favicon-196.png" />
 				<link rel="apple-touch-icon" href="/apple-icon-180.png" />
@@ -154,7 +153,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 				/>
 			</Head>
 
-			<header />
 			<Component {...pageProps} />
 		</ChakraProvider>
 	)
