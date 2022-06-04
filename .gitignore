@@ -30,3 +30,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+**/public/workbox-*
+**/public/sw*
+**/public/worker-*
+**/public/fallback-*
+
