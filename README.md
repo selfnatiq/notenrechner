@@ -1,3 +1,3 @@
 # Notenrechner
 
-An app to calculate grades in Swiss grading system
+An **PWA** app to calculate grades in Swiss grading system
